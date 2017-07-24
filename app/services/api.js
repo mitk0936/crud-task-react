@@ -12,6 +12,4 @@ export const fetchPermissions = () =>
 			return {
 				permissions: response.permissions
 			}
-		}).catch(function (e) {
-			Promise.reject()
 		})
