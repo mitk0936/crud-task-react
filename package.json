@@ -5,7 +5,7 @@
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/mitk0936/crud-task-react"
   },
   "keywords": [
     "crud",

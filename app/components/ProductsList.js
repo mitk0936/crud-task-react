@@ -1,9 +1,9 @@
 import React from 'react'
 import WithPermission from '../containers/WithPermission'
 import DeleteButton from './DeleteButton'
-import UpdateButton from './UpdateButton'
+import { ProductUpdateForm } from './ProductForm'
 
-const ProductsList = ({ products, onDelete }) => {
+const ProductsList = ({ products, onDelete, onUpdate }) => {
 	return (
 		<table>
 			<thead>
@@ -21,6 +21,12 @@ const ProductsList = ({ products, onDelete }) => {
 						</th>
 						<th>
 							<b>Currency</b>
+						</th>
+						<th>
+							<b>Update</b>
+						</th>
+						<th>
+							<b>Delete</b>
 						</th>
 					</tr> : null
 			}
@@ -45,7 +51,10 @@ const ProductsList = ({ products, onDelete }) => {
 									{ currency }
 								</td>
 								<td>
-									<UpdateButton onClick={ (e) => onDelete(productId) } />
+									<ProductUpdateForm
+										defaultInputValues={{ name, price, currency }}
+										buttonLabel="Update Item"
+										onSubmit={ ({ name, price, currency }) => onUpdate({ id: productId, name, price, currency }) } />
 								</td>
 								<td>
 									<DeleteButton onClick={ (e) => onDelete(productId) } />
@@ -61,7 +70,8 @@ const ProductsList = ({ products, onDelete }) => {
 
 ProductsList.propTypes = {
 	products: React.PropTypes.object.isRequired,
-	onDelete: React.PropTypes.func.isRequired
+	onDelete: React.PropTypes.func.isRequired,
+	onUpdate: React.PropTypes.func.isRequired
 }
 
 export default WithPermission(ProductsList, 'READ')

@@ -37,3 +37,9 @@ export const deleteProduct = {
 	success: ({ id }) => action(DELETE_PRODUCT.SUCCESS, { id }),
 	failure: ({ id }) => action(DELETE_PRODUCT.FAILURE, { id })
 }
+
+export const updateProduct = {
+	request: ({ id, name, price, currency, onRequestFailure }) => action(UPDATE_PRODUCT.REQUEST, { id, name, price, currency, onRequestFailure }),
+	success: ({ id, name, price, currency }) => action(UPDATE_PRODUCT.SUCCESS, { id, name, price, currency }),
+	failure: ({ id, name, price, currency }) => action(UPDATE_PRODUCT.FAILURE, { id, name, price, currency })
+}

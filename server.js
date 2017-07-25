@@ -27,22 +27,21 @@ app.use(middleware)
 app.use(webpackHotMiddleware(compiler))
 
 const loadPermissions = function (onReady) {
-	try {
-		fs.readFile('mocked-permissions.json', 'utf8', function (err, data) {
-			if (data) {
-				return onReady(JSON.parse(data))
+	fs.readFile('mocked-permissions.json', 'utf8', function (err, data) {
+		if (data) {
+			try {
+				onReady(JSON.parse(data))
+			} catch (e) {
+				onReady({})
 			}
-
-			onReady([])
-		})
-	} catch (e) {
-		onReady([])
-	}
+		} else {
+			onReady({})
+		}
+	})
 }
 
 app.get('/permissions', (req, res) => {
 	loadPermissions((permissions) => {
-		console.log('all fine')
 		res.json(permissions)
 		res.end()
 	})
@@ -62,6 +61,16 @@ app.post('/add-product', bodyParser, function (req, res) {
 	loadPermissions((permissionsData) => {
 		res.json({
 			success: permissionsData.permissions.includes('CREATE')
+		})
+
+		res.end()
+	})
+})
+
+app.post('/update-product', bodyParser, function (req, res) {
+	loadPermissions((permissionsData) => {
+		res.json({
+			success: permissionsData.permissions.includes('UPDATE')
 		})
 
 		res.end()

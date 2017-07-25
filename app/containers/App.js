@@ -2,9 +2,9 @@ import React from 'react'
 import styles from '../resources/css/App.css'
 
 import { connect } from "react-redux"
-import { addProduct, deleteProduct } from '../actions'
+import { addProduct, deleteProduct, updateProduct } from '../actions'
 
-import ProductForm from '../components/ProductForm'
+import { ProductCreateForm } from '../components/ProductForm'
 import ProductsList from '../components/ProductsList'
 
 class App extends React.Component {
@@ -13,6 +13,7 @@ class App extends React.Component {
 
 		this.onProductSubmit = this.onProductSubmit.bind(this)
 		this.onDeleteItem = this.onDeleteItem.bind(this)
+		this.onUpdateItem = this.onUpdateItem.bind(this)
 	}
 
 	shouldComponentUpdate (nextProps) {
@@ -27,7 +28,7 @@ class App extends React.Component {
 			name,
 			price,
 			currency,
-			onRequestFailure: () => alert('You are not allowed to submit new items.')
+			onRequestFailure: () => alert('You are not allowed to submit new product items.')
 		})
 	}
 
@@ -36,21 +37,34 @@ class App extends React.Component {
 
 		deleteProduct({
 			id,
-			onRequestFailure: () => alert('You are not allowed to delete items.')
+			onRequestFailure: () => alert('You are not allowed to delete product items.')
+		})
+	}
+
+	onUpdateItem ({ id, name, price, currency }) {
+		const { updateProduct } = this.props
+
+		updateProduct({
+			id,
+			name,
+			price,
+			currency,
+			onRequestFailure: () => alert('You are not allowed to update prduct items.')
 		})
 	}
 
 	render () {
 		return (
 			<div className={styles.app}>
-				<ProductForm
+				<ProductCreateForm
 					title="Add new item"
 					buttonLabel="Add Item"
 					onSubmit={ this.onProductSubmit }	/>
 
 				<ProductsList
 					products={ this.props.products }
-					onDelete={ this.onDeleteItem }/>
+					onDelete={ this.onDeleteItem }
+					onUpdate={ this.onUpdateItem } />
 			</div>
 		)
 	}
@@ -59,6 +73,7 @@ class App extends React.Component {
 App.propTypes = {
 	addProduct: React.PropTypes.func.isRequired,
 	deleteProduct: React.PropTypes.func.isRequired,
+	updateProduct: React.PropTypes.func.isRequired,
 	products: React.PropTypes.object.isRequired
 }
 
@@ -68,5 +83,6 @@ export default connect(function (state) {
 	}
 }, {
 	addProduct: addProduct.request,
-	deleteProduct: deleteProduct.request
+	deleteProduct: deleteProduct.request,
+	updateProduct: updateProduct.request
 })(App)

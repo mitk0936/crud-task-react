@@ -32,23 +32,28 @@ export function* requestAction (action, apiCall, requestData = {}, onRequestFail
 }
 
 export const addProduct = function* ({ id, name, price, currency, onRequestFailure }) {
-	yield fork(requestAction, actions.addProduct, api.addProduct, { id, name, price, currency })
+	yield fork(requestAction, actions.addProduct, api.addProduct, { id, name, price, currency }, onRequestFailure)
 }
 
 export const deleteProduct = function* ({ id, onRequestFailure }) {
 	yield fork(requestAction, actions.deleteProduct, api.deleteProduct, { id }, onRequestFailure)
 }
 
+export const updateProduct = function* ({ id, name, price, currency, onRequestFailure }) {
+	yield fork(requestAction, actions.updateProduct, api.updateProduct, { id, name, price, currency }, onRequestFailure)
+}
 
 export function* watchProductActions () {
 	yield takeEvery(actions.ADD_PRODUCT.REQUEST, addProduct)
 	yield takeEvery(actions.DELETE_PRODUCT.REQUEST, deleteProduct)
+	yield takeEvery(actions.UPDATE_PRODUCT.REQUEST, updateProduct)
 }
 
 export function* watchUpdatePermissions () {
-	yield throttle(2000, [
+	yield throttle(10000, [
 		actions.ADD_PRODUCT.REQUEST,
-		actions.DELETE_PRODUCT.REQUEST
+		actions.DELETE_PRODUCT.REQUEST,
+		actions.UPDATE_PRODUCT.REQUEST
 	], fetchPermissions)
 }
 

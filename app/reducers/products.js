@@ -3,6 +3,7 @@ import { omit } from '../utils'
 
 const products = (state = {}, action) => {
 	switch (action.type) {
+		case actions.UPDATE_PRODUCT.SUCCESS:
 		case actions.ADD_PRODUCT.SUCCESS:
 			return {
 				...state,

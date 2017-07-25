@@ -24,8 +24,8 @@ export const fetchPermissions = () =>
 		}
 	})
 
-export const addProduct = (productData = { id, name, price, currency }) =>
-	fetch('/add-product', {
+export const submitProduct = (apiUrl, productData = { id, name, price, currency }) =>
+	fetch(apiUrl, {
 		method: 'POST',
 		body: JSON.stringify(productData),
 		headers: {
@@ -52,3 +52,6 @@ export const deleteProduct = (productData = { id }) =>
 			success: response.success
 		}
 	})
+
+export const updateProduct = (productData = { id, name, price, currency }) => submitProduct('/update-product', productData)
+export const addProduct = (productData = { id, name, price, currency }) => submitProduct('/add-product', productData)
