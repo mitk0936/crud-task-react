@@ -2,7 +2,7 @@ import React from 'react'
 import styles from '../resources/css/App.css'
 
 import { connect } from "react-redux"
-import { checkPermission, addProduct, deleteProduct } from '../actions'
+import { addProduct, deleteProduct } from '../actions'
 
 import ProductForm from '../components/ProductForm'
 import ProductsList from '../components/ProductsList'
@@ -20,24 +20,23 @@ class App extends React.Component {
 	}
 
 	onProductSubmit ({ name, price, currency }) {
-		const { checkPermission, addProduct } = this.props
+		const { addProduct } = this.props
 
-		checkPermission('CREATE', () => {
-			const productId = `product-${new Date().getTime()}`
-			addProduct(productId, name, price, currency)
-		}, () => {
-			alert('You are not allowed to submit new items.')
+		addProduct({
+			id: `product-${new Date().getTime()}`,
+			name,
+			price,
+			currency,
+			onRequestFailure: () => alert('You are not allowed to submit new items.')
 		})
 	}
 
 	onDeleteItem (id) {
-		const { checkPermission, deleteProduct } = this.props
+		const { deleteProduct } = this.props
 
-		confirm("Are you sure you want to delete this product?") &&
-		checkPermission('DELETE', () => {
-			deleteProduct(id)
-		}, () => {
-			alert('You are not allowed to delete items.')
+		deleteProduct({
+			id,
+			onRequestFailure: () => alert('You are not allowed to delete items.')
 		})
 	}
 
@@ -59,7 +58,7 @@ class App extends React.Component {
 
 App.propTypes = {
 	addProduct: React.PropTypes.func.isRequired,
-	checkPermission: React.PropTypes.func.isRequired,
+	deleteProduct: React.PropTypes.func.isRequired,
 	products: React.PropTypes.object.isRequired
 }
 
@@ -68,5 +67,6 @@ export default connect(function (state) {
 		products: state.products
 	}
 }, {
-	checkPermission, addProduct, deleteProduct
+	addProduct: addProduct.request,
+	deleteProduct: deleteProduct.request
 })(App)

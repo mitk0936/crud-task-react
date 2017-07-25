@@ -1,33 +1,61 @@
-import { all, call, takeEvery, fork, put, select } from "redux-saga/effects"
+import { all, call, takeEvery, throttle, fork, put, select } from "redux-saga/effects"
 import { delay } from "redux-saga"
 import * as actions from '../actions'
 import * as api from '../services/api'
 import { getPermissions } from './selectors'
 
-export function* updatePermissions () {
+export function* fetchPermissions () {
 	try {
 		const { permissions } = yield call(api.fetchPermissions)
 		yield put(actions.permissions.success(permissions));
 	} catch (e) {
 		yield put(actions.permissions.failure())
 		yield call(delay, 5000)
-		yield call(updatePermissions)
+		yield call(fetchPermissions)
 	}
 }
 
-export function* checkPermission ({ permissionType, success, failure }) {
-	yield call(updatePermissions)
-	const permissions = yield select(getPermissions)
-	permissions[permissionType] ? success() : failure()
+export function* requestAction (action, apiCall, requestData = {}, onRequestFailure) {
+	try {
+		const { success } = yield call(apiCall, requestData)
+
+		if (success) {
+			yield put(action.success(requestData))
+		} else {
+			onRequestFailure()
+			yield put(action.failure(requestData))
+		}
+
+	} catch (e) {
+		onRequestFailure()
+	}
 }
 
-export function* watchRequestPermissions () {
-	yield takeEvery(actions.CHECK_PERMISSION, checkPermission)
+export const addProduct = function* ({ id, name, price, currency, onRequestFailure }) {
+	yield fork(requestAction, actions.addProduct, api.addProduct, { id, name, price, currency })
+}
+
+export const deleteProduct = function* ({ id, onRequestFailure }) {
+	yield fork(requestAction, actions.deleteProduct, api.deleteProduct, { id }, onRequestFailure)
+}
+
+
+export function* watchProductActions () {
+	yield takeEvery(actions.ADD_PRODUCT.REQUEST, addProduct)
+	yield takeEvery(actions.DELETE_PRODUCT.REQUEST, deleteProduct)
+}
+
+export function* watchUpdatePermissions () {
+	yield throttle(2000, [
+		actions.ADD_PRODUCT.REQUEST,
+		actions.DELETE_PRODUCT.REQUEST
+	], fetchPermissions)
 }
 
 export function* sagas() {
 	yield all([
-		fork(updatePermissions),
-		fork(watchRequestPermissions)
+		fork(fetchPermissions),
+		fork(watchProductActions),
+		fork(watchUpdatePermissions)
 	])
 }

@@ -3,7 +3,7 @@ import { omit } from '../utils'
 
 const products = (state = {}, action) => {
 	switch (action.type) {
-		case actions.ADD_PRODUCT:
+		case actions.ADD_PRODUCT.SUCCESS:
 			return {
 				...state,
 				[action.id]: {
@@ -12,7 +12,7 @@ const products = (state = {}, action) => {
 					currency: action.currency
 				}
 			}
-		case actions.DELETE_PRODUCT:
+		case actions.DELETE_PRODUCT.SUCCESS:
 			return omit([action.id], state)
 	}
 
