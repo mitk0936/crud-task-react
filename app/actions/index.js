@@ -5,10 +5,9 @@ const action = (type, payload = {}) => {
 // Ajax Action Types
 const REQUEST = 'REQUEST'
 const SUCCESS = 'SUCCESS'
-const FAILURE = 'FAILURE'
 
 function createRequestTypes (base) {
-	return [REQUEST, SUCCESS, FAILURE].reduce((acc, type) => {
+	return [REQUEST, SUCCESS].reduce((acc, type) => {
 		acc[type] = `${base}_${type}`
 		return acc
 	}, {})
@@ -22,24 +21,20 @@ export const UPDATE_PRODUCT = createRequestTypes('UPDATE_PRODUCT')
 // Action creators
 export const permissions = {
 	request: () => action(PERMISSIONS.REQUEST),
-	success: (permissions) => action(PERMISSIONS.SUCCESS, { permissions }),
-	failure: () => action(PERMISSIONS.FAILURE)
+	success: (permissions) => action(PERMISSIONS.SUCCESS, { permissions })
 }
 
 export const addProduct = {
 	request: ({ id, name, price, currency, onRequestFailure }) => action(ADD_PRODUCT.REQUEST, { id, name, price, currency, onRequestFailure }),
-	success: ({ id, name, price, currency }) => action(ADD_PRODUCT.SUCCESS, { id, name, price, currency }),
-	failure: ({ id, name, price, currency }) => action(ADD_PRODUCT.FAILURE, { id, name, price, currency })
+	success: ({ id, name, price, currency }) => action(ADD_PRODUCT.SUCCESS, { id, name, price, currency })
 }
 
 export const deleteProduct = {
 	request: ({ id, onRequestFailure }) => action(DELETE_PRODUCT.REQUEST, { id, onRequestFailure }),
-	success: ({ id }) => action(DELETE_PRODUCT.SUCCESS, { id }),
-	failure: ({ id }) => action(DELETE_PRODUCT.FAILURE, { id })
+	success: ({ id }) => action(DELETE_PRODUCT.SUCCESS, { id })
 }
 
 export const updateProduct = {
 	request: ({ id, name, price, currency, onRequestFailure }) => action(UPDATE_PRODUCT.REQUEST, { id, name, price, currency, onRequestFailure }),
-	success: ({ id, name, price, currency }) => action(UPDATE_PRODUCT.SUCCESS, { id, name, price, currency }),
-	failure: ({ id, name, price, currency }) => action(UPDATE_PRODUCT.FAILURE, { id, name, price, currency })
+	success: ({ id, name, price, currency }) => action(UPDATE_PRODUCT.SUCCESS, { id, name, price, currency })
 }

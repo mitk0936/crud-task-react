@@ -1,15 +1,13 @@
-import { all, call, takeEvery, throttle, fork, put, select } from "redux-saga/effects"
+import { all, call, takeEvery, throttle, fork, put } from "redux-saga/effects"
 import { delay } from "redux-saga"
 import * as actions from '../actions'
 import * as api from '../services/api'
-import { getPermissions } from './selectors'
 
 export function* fetchPermissions () {
 	try {
 		const { permissions } = yield call(api.fetchPermissions)
 		yield put(actions.permissions.success(permissions));
 	} catch (e) {
-		yield put(actions.permissions.failure())
 		yield call(delay, 5000)
 		yield call(fetchPermissions)
 	}
@@ -23,7 +21,6 @@ export function* requestAction (action, apiCall, requestData = {}, onRequestFail
 			yield put(action.success(requestData))
 		} else {
 			onRequestFailure()
-			yield put(action.failure(requestData))
 		}
 
 	} catch (e) {
