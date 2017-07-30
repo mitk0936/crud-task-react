@@ -2,6 +2,11 @@ import React from 'react'
 import { connect } from "react-redux"
 
 class Wrapper extends React.Component {
+	
+	shouldComponentUpdate (nextProps) {
+		return (JSON.stringify(this.props) !== JSON.stringify(nextProps))
+	}
+
 	render () {
 		const { permissions, permissionId, WrrappedComponent } = this.props
 		const allowedToRender = (permissions[permissionId] === true)
