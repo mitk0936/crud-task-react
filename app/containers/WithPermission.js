@@ -25,7 +25,7 @@ const childrenTypes = React.PropTypes.oneOfType([
 	React.PropTypes.arrayOf(React.PropTypes.node),
 	React.PropTypes.node,
 	React.PropTypes.func
-])
+]);
 
 Wrapper.propTypes = {
 	permissionId: React.PropTypes.string.isRequired,
