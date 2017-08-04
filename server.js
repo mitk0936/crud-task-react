@@ -26,16 +26,20 @@ const middleware = webpackMiddleware(compiler, {
 app.use(middleware)
 app.use(webpackHotMiddleware(compiler))
 
+const defaultPermissions = {
+	permissions: []
+}
+
 const loadPermissions = function (onReady) {
 	fs.readFile('mocked-permissions.json', 'utf8', function (err, data) {
 		if (data) {
 			try {
 				onReady(JSON.parse(data))
 			} catch (e) {
-				onReady({})
+				onReady(defaultPermissions)
 			}
 		} else {
-			onReady({})
+			onReady(defaultPermissions)
 		}
 	})
 }
